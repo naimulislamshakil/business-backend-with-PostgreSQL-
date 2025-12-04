@@ -10,6 +10,7 @@ import bcrypt from 'bcrypt';
 import { generateVerificationCode } from '../utils/generateVerificationCode.js';
 import { sendEmail } from '../utils/sendEmail.js';
 import pool from '../config/db.js';
+import { sendToken } from '../utils/sendToken.js';
 
 export const registerControllers = catchAsyncError(async (req, res, next) => {
 	const { name, email, phone, password } = req.body;
@@ -99,4 +100,25 @@ export const verifyOtp = catchAsyncError(async (req, res, next) => {
 	);
 
 	handelResponse(res, 200, true, 'Account Verified');
+});
+
+export const login = catchAsyncError(async (req, res, next) => {
+	const { email, password } = req.body;
+	if (!email || !password) {
+		return next(new ErrorHandler('All field is required.', 400));
+	}
+
+	const user = await isUserAlreadyExisting(email);
+
+	if (!user) {
+		return next(new ErrorHandler('Invalid email and password', 400));
+	}
+
+	const isMatchPassword = await bcrypt.compare(password, user.password);
+
+	if (!isMatchPassword) {
+		return next(new ErrorHandler('Invalid email and password', 400));
+	}
+
+	sendToken(user, 200, 'User login successfully.', res);
 });
