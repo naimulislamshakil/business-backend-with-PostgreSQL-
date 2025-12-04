@@ -17,3 +17,12 @@ export const createUser = async (name, email, password, phone) => {
 
 	return result.rows[0];
 };
+
+export const getUserForVerify = async (email) => {
+	const result = await pool.query(
+		'SELECT * FROM users WHERE email = $1 AND account_verified=false LIMIT 1',
+		[email]
+	);
+
+	return result.rows[0];
+};

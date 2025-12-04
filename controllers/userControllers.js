@@ -1,10 +1,15 @@
 import { catchAsyncError } from '../middlewares/catchAsyncError.js';
 import ErrorHandler from '../middlewares/errorHandler.js';
 import { handelResponse } from '../middlewares/handelResponse.js';
-import { createUser, isUserAlreadyExisting } from '../models/userModels.js';
+import {
+	createUser,
+	getUserForVerify,
+	isUserAlreadyExisting,
+} from '../models/userModels.js';
 import bcrypt from 'bcrypt';
 import { generateVerificationCode } from '../utils/generateVerificationCode.js';
 import { sendEmail } from '../utils/sendEmail.js';
+import pool from '../config/db.js';
 
 export const registerControllers = catchAsyncError(async (req, res, next) => {
 	const { name, email, phone, password } = req.body;
@@ -61,3 +66,37 @@ function generateEmailTemplate(verificationCode) {
     </div>
   `;
 }
+
+export const verifyOtp = catchAsyncError(async (req, res, next) => {
+	const { email, otp } = req.body;
+	if (!email || !otp) {
+		next(new ErrorHandler('All field is required.'));
+	}
+
+	const user = await getUserForVerify(email);
+
+	if (!user) {
+		return next(new ErrorHandler('User Not found.', 400));
+	}
+
+	if (user.verificition_code !== Number(otp)) {
+		return next(new ErrorHandler('Invalid OTP', 400));
+	}
+
+	const currentDate = Date.now();
+
+	const verificationCodeExpire = new Date(
+		user.verificition_code_expire
+	).getTime();
+
+	if (currentDate > verificationCodeExpire) {
+		return next(new ErrorHandler('OTP Expire', 400));
+	}
+
+	await pool.query(
+		'UPDATE users SET account_verified=true,verificition_code=null,verificition_code_expire=null WHERE email=$1',
+		[email]
+	);
+
+	handelResponse(res, 200, true, 'Account Verified');
+});
