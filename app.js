@@ -7,6 +7,7 @@ export const app = express();
 config();
 import pool from './config/db.js';
 import { errorMiddleWare } from './middlewares/errorHandler.js';
+import userRoute from './routes/userRoutes.js';
 
 app.use(
 	cors({
@@ -24,5 +25,8 @@ app.get('/', async (req, res) => {
 	const result = await pool.query('SELECT current_database()');
 	res.send(`The databse name is: ${result.rows[0].current_database}`);
 });
+
+// call route
+app.use('/api/v1/user', userRoute);
 
 app.use(errorMiddleWare);
