@@ -122,3 +122,8 @@ export const login = catchAsyncError(async (req, res, next) => {
 
 	sendToken(user, 200, 'User login successfully.', res);
 });
+
+export const me = catchAsyncError(async (req, res, next) => {
+	const { password, ...userData } = req.user;
+	handelResponse(res, 200, true, 'User', userData);
+});
