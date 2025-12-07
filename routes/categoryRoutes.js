@@ -3,6 +3,7 @@ import {
 	addCategory,
 	deleteCategory,
 	getAllCategories,
+	getSingleCategory,
 	updateCategory,
 } from '../controllers/categoryControllers.js';
 import { isAuthenticated } from '../middlewares/auth.js';
@@ -33,6 +34,12 @@ router.put(
 	isAuthenticated,
 	authorizeRoles('admin'),
 	updateCategory
+);
+router.get(
+	'/category/:id',
+	isAuthenticated,
+	authorizeRoles('admin'),
+	getSingleCategory
 );
 
 export default router;

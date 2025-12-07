@@ -60,8 +60,6 @@ export const updateCategory = catchAsyncError(async (req, res, next) => {
 
 	const existing = await getCategoryByIdModel(categoryId);
 
-	
-
 	if (!existing) {
 		return next(new ErrorHandler('Category not found.', 404));
 	}
@@ -85,4 +83,18 @@ export const updateCategory = catchAsyncError(async (req, res, next) => {
 	}
 
 	handelResponse(res, 200, true, 'Category update successfully.');
+});
+
+export const getSingleCategory = catchAsyncError(async (req, res, next) => {
+	const categoryId = Number(req.params.id);
+
+	const result = await getCategoryByIdModel(categoryId);
+
+	if (result) {
+		res.status(200).json({
+			success: true,
+			message: 'Category Get single',
+			data: result,
+		});
+	}
 });
