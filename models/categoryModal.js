@@ -12,3 +12,11 @@ export const getAllcategoriesModel = async () => {
 	const result = await pool.query('SELECT * FROM categories');
 	return result.rows;
 };
+
+export const deleteCategoryModel = async (id) => {
+	const result = await pool.query(
+		'DELETE FROM categories WHERE category_id=$1 RETURNING *',
+		[id]
+	);
+	return result.rows[0];
+};

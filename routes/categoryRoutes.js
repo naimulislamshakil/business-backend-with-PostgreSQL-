@@ -1,6 +1,7 @@
 import express from 'express';
 import {
 	addCategory,
+	deleteCategory,
 	getAllCategories,
 } from '../controllers/categoryControllers.js';
 import { isAuthenticated } from '../middlewares/auth.js';
@@ -14,11 +15,11 @@ router.post(
 	authorizeRoles('admin'),
 	addCategory
 );
-router.get(
-	'/category',
+router.delete(
+	'/category/:id',
 	isAuthenticated,
 	authorizeRoles('admin'),
-	getAllCategories
+	deleteCategory
 );
 
 export default router;

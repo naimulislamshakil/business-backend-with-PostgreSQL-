@@ -3,6 +3,7 @@ import ErrorHandler from '../middlewares/errorHandler.js';
 import { handelResponse } from '../middlewares/handelResponse.js';
 import {
 	addCategoryModule,
+	deleteCategoryModel,
 	getAllcategoriesModel,
 } from '../models/categoryModal.js';
 
@@ -37,4 +38,12 @@ export const getAllCategories = catchAsyncError(async (req, res, next) => {
 		message: 'Category Get',
 		data: categories,
 	});
+});
+
+export const deleteCategory = catchAsyncError(async (req, res, next) => {
+	const { id } = req.params;
+	const result = await deleteCategoryModel(id);
+	if (result) {
+		handelResponse(res, 200, true, 'Category delete successfully.');
+	}
 });
