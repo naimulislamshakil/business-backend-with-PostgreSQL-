@@ -26,6 +26,10 @@ export const errorMiddleWare = (err, req, res, next) => {
 		const message = `Duplicate ${Object.keys(err.keyValue)} Entered`;
 		err = new ErrorHandler(message, 400);
 	}
+	if (err.code === 23505) {
+		const message = 'Duplicate entry not allowed.';
+		err = new ErrorHandler(message, 409);
+	}
 
 	return res.status(err.statusCode).json({
 		success: false,

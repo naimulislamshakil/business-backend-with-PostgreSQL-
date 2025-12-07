@@ -5,6 +5,8 @@ import {
 	addCategoryModule,
 	deleteCategoryModel,
 	getAllcategoriesModel,
+	getCategoryByIdModel,
+	updateCategoryModel,
 } from '../models/categoryModal.js';
 
 export const addCategory = catchAsyncError(async (req, res, next) => {
@@ -46,4 +48,41 @@ export const deleteCategory = catchAsyncError(async (req, res, next) => {
 	if (result) {
 		handelResponse(res, 200, true, 'Category delete successfully.');
 	}
+});
+
+export const updateCategory = catchAsyncError(async (req, res, next) => {
+	const categoryId = Number(req.params.id);
+	const { name, description, isActive } = req.body;
+
+	if (!name || !description || !isActive) {
+		return next(new ErrorHandler('All fields are required.', 400));
+	}
+
+	const existing = await getCategoryByIdModel(categoryId);
+
+	
+
+	if (!existing) {
+		return next(new ErrorHandler('Category not found.', 404));
+	}
+
+	const newSlug = name
+		.toLowerCase()
+		.trim()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/^-+|-+$/g, '');
+
+	const result = await updateCategoryModel(
+		name,
+		description,
+		isActive,
+		newSlug,
+		categoryId
+	);
+
+	if (!result) {
+		return next(new ErrorHandler('Category not found.', 404));
+	}
+
+	handelResponse(res, 200, true, 'Category update successfully.');
 });

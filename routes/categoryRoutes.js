@@ -3,6 +3,7 @@ import {
 	addCategory,
 	deleteCategory,
 	getAllCategories,
+	updateCategory,
 } from '../controllers/categoryControllers.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import { authorizeRoles } from '../middlewares/roleMiddleware.js';
@@ -15,11 +16,23 @@ router.post(
 	authorizeRoles('admin'),
 	addCategory
 );
+router.get(
+	'/category',
+	isAuthenticated,
+	authorizeRoles('admin'),
+	getAllCategories
+);
 router.delete(
 	'/category/:id',
 	isAuthenticated,
 	authorizeRoles('admin'),
 	deleteCategory
+);
+router.put(
+	'/category/:id',
+	isAuthenticated,
+	authorizeRoles('admin'),
+	updateCategory
 );
 
 export default router;

@@ -20,3 +20,27 @@ export const deleteCategoryModel = async (id) => {
 	);
 	return result.rows[0];
 };
+
+export const updateCategoryModel = async (
+	name,
+	description,
+	isActive,
+	newSlug,
+	id
+) => {
+	const result = await pool.query(
+		'UPDATE categories SET name=$1, description=$2, is_active=$3, slug=$4 WHERE category_id=$5 RETURNING *',
+		[name, description, isActive, newSlug, id]
+	);
+
+	return result.rows[0];
+};
+
+export const getCategoryByIdModel = async (id) => {
+	const result = await pool.query(
+		'SELECT * FROM categories WHERE category_id = $1',
+		[id]
+	);
+
+	return result.rows[0];
+};
