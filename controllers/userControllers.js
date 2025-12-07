@@ -27,7 +27,7 @@ export const registerControllers = catchAsyncError(async (req, res, next) => {
 	const hashPassword = await bcrypt.hash(password, 10);
 	const user = await createUser(name, email, hashPassword, phone);
 
-	const varifictionCode = await generateVerificationCode(user.id);
+	const varifictionCode = await generateVerificationCode(user.user_id);
 
 	sendVarificationCode(varifictionCode, email, res);
 });
@@ -126,4 +126,17 @@ export const login = catchAsyncError(async (req, res, next) => {
 export const me = catchAsyncError(async (req, res, next) => {
 	const { password, ...userData } = req.user;
 	handelResponse(res, 200, true, 'User', userData);
+});
+
+export const logout = catchAsyncError(async (req, res, next) => {
+	res
+		.status(200)
+		.cookie('token', '', {
+			expires: new Date(Date.now()),
+			httpOnly: true,
+		})
+		.json({
+			success: true,
+			message: 'Logged out successfully.',
+		});
 });

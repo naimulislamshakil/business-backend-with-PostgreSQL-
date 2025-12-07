@@ -8,6 +8,7 @@ config();
 import pool from './config/db.js';
 import { errorMiddleWare } from './middlewares/errorHandler.js';
 import userRoute from './routes/userRoutes.js';
+import categoryRoute from './routes/categoryRoutes.js';
 
 app.use(
 	cors({
@@ -28,5 +29,6 @@ app.get('/', async (req, res) => {
 
 // call route
 app.use('/api/v1/user', userRoute);
+app.use('/api/v1/category', categoryRoute);
 
 app.use(errorMiddleWare);
