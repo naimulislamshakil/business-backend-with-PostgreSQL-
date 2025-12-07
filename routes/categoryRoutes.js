@@ -1,5 +1,8 @@
 import express from 'express';
-import { addCategory } from '../controllers/categoryControllers.js';
+import {
+	addCategory,
+	getAllCategories,
+} from '../controllers/categoryControllers.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import { authorizeRoles } from '../middlewares/roleMiddleware.js';
 
@@ -10,6 +13,12 @@ router.post(
 	isAuthenticated,
 	authorizeRoles('admin'),
 	addCategory
+);
+router.get(
+	'/category',
+	isAuthenticated,
+	authorizeRoles('admin'),
+	getAllCategories
 );
 
 export default router;

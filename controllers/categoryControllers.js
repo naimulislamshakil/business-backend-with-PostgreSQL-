@@ -1,7 +1,10 @@
 import { catchAsyncError } from '../middlewares/catchAsyncError.js';
 import ErrorHandler from '../middlewares/errorHandler.js';
 import { handelResponse } from '../middlewares/handelResponse.js';
-import { addCategoryModule } from '../models/categoryModal.js';
+import {
+	addCategoryModule,
+	getAllcategoriesModel,
+} from '../models/categoryModal.js';
 
 export const addCategory = catchAsyncError(async (req, res, next) => {
 	try {
@@ -25,4 +28,13 @@ export const addCategory = catchAsyncError(async (req, res, next) => {
 	} catch (error) {
 		next(error.message);
 	}
+});
+
+export const getAllCategories = catchAsyncError(async (req, res, next) => {
+	const categories = await getAllcategoriesModel();
+	res.status(200).json({
+		success: true,
+		message: 'Category Get',
+		data: categories,
+	});
 });

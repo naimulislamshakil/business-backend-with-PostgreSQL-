@@ -7,3 +7,8 @@ export const addCategoryModule = async (name, isActive, description, slug) => {
 	);
 	return result.rows[0];
 };
+
+export const getAllcategoriesModel = async () => {
+	const result = await pool.query('SELECT * FROM categories');
+	return result.rows;
+};
