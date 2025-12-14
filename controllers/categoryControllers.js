@@ -54,7 +54,9 @@ export const updateCategory = catchAsyncError(async (req, res, next) => {
 	const categoryId = Number(req.params.id);
 	const { name, description, isActive } = req.body;
 
-	if (!name || !description || !isActive) {
+	console.log({ name, description, isActive });
+
+	if (!name || !description || typeof isActive !== 'boolean') {
 		return next(new ErrorHandler('All fields are required.', 400));
 	}
 
