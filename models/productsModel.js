@@ -36,3 +36,47 @@ export const addProductModel = async (
 
 	return result.rows[0];
 };
+
+export const getAllProductsModel = async () => {
+	const result = await pool.query(`
+    SELECT 
+      p.product_id,
+      p.name,
+      p.slug,
+      p.description,
+      p.category_id,
+      c.name AS category_name,
+      p.brand,
+      p.sku,
+      p.price,
+      p.stock_quantity,
+      p.weight,
+      p.dimensions,
+      p.images,
+      p.is_active,
+      p.colors,
+      p.created_at,
+      p.updated_at
+    FROM products p
+    JOIN categories c ON p.category_id = c.category_id
+    ORDER BY p.product_id DESC
+  `);
+
+	return result.rows;
+};
+
+export const deleteProductModel = async (id) => {
+	const result = await pool.query(
+		'DELETE FROM products WHERE product_id=$1 RETURNING *',
+		[id]
+	);
+	return result.rows[0];
+};
+
+export const getSingleProductModel = async (id) => {
+	const result = await pool.query(
+		'SELECT * FROM products WHERE product_id=$1',
+		[id]
+	);
+	return result.rows[0];
+};

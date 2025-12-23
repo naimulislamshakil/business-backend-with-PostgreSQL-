@@ -2,7 +2,12 @@ import { catchAsyncError } from '../middlewares/catchAsyncError.js';
 import ErrorHandler from '../middlewares/errorHandler.js';
 import { handelResponse } from '../middlewares/handelResponse.js';
 import { getCategoryByIdModel } from '../models/categoryModal.js';
-import { addProductModel } from '../models/productsModel.js';
+import {
+	addProductModel,
+	deleteProductModel,
+	getAllProductsModel,
+	getSingleProductModel,
+} from '../models/productsModel.js';
 import { generateSKU } from '../utils/generate-sku.js';
 
 export const addProduct = catchAsyncError(async (req, res, next) => {
@@ -69,5 +74,29 @@ export const addProduct = catchAsyncError(async (req, res, next) => {
 
 	if (result) {
 		handelResponse(res, 200, true, 'Products create successfully');
+	}
+});
+
+export const getAllProducts = catchAsyncError(async (req, res, next) => {
+	const result = await getAllProductsModel();
+
+	if (result) {
+		handelResponse(res, 200, true, 'Get all products.', result);
+	}
+});
+
+export const deleteProduct = catchAsyncError(async (req, res, next) => {
+	const { id } = req.params;
+	const result = await deleteProductModel(id);
+	if (result) {
+		handelResponse(res, 200, true, 'Product delete successfully.');
+	}
+});
+
+export const getSingleProduct = catchAsyncError(async (req, res, next) => {
+	const { id } = req.params;
+	const result = await getSingleProductModel(id);
+	if (result) {
+		handelResponse(res, 200, true, 'Product get successfully.', result);
 	}
 });
