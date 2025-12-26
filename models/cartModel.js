@@ -29,3 +29,21 @@ export const addCartItemModel = async ({
 
 	return insertResult.rows[0];
 };
+
+export const getAllCartModel = async (userId) => {
+	const result = await pool.query(
+		`SELECT ci.id,
+    ci.color,
+    ci.quantity,
+    ci.price,
+    p.name,
+    p.images[1] AS image
+    FROM cart_items ci
+    JOIN  carts c ON ci.cart_id=c.id
+    JOIN products p ON ci.product_id=p.product_id
+    WHERE c.user_id=$1`,
+		[userId]
+	);
+
+	return result.rows;
+};
