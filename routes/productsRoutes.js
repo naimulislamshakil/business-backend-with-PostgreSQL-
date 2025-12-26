@@ -17,6 +17,7 @@ route.get(
 	authorizeRoles('admin'),
 	getAllProducts
 );
+route.get('/get-product-for-frontend', getAllProducts);
 route.delete(
 	'/delete-product/:id',
 	isAuthenticated,
@@ -29,5 +30,6 @@ route.get(
 	authorizeRoles('admin'),
 	getSingleProduct
 );
+route.get('/product-for-frontend/:id', getSingleProduct);
 
 export default route;

@@ -10,6 +10,7 @@ import { errorMiddleWare } from './middlewares/errorHandler.js';
 import userRoute from './routes/userRoutes.js';
 import categoryRoute from './routes/categoryRoutes.js';
 import productRoute from './routes/productsRoutes.js';
+import orderRoute from './routes/orderRoutes.js';
 
 app.use(
 	cors({
@@ -32,5 +33,6 @@ app.get('/', async (req, res) => {
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/category', categoryRoute);
 app.use('/api/v1/product', productRoute);
+app.use('/api/v1/order', orderRoute);
 
 app.use(errorMiddleWare);
