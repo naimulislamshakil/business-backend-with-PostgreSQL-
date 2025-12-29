@@ -47,3 +47,68 @@ export const getAllCartModel = async (userId) => {
 
 	return result.rows;
 };
+
+export const updateCartQuantityModel = async ({
+	userId,
+	productId,
+	color,
+	type,
+}) => {
+	const { rows } = await pool.query(`SELECT id FROM carts WHERE user_id=$1`, [
+		userId,
+	]);
+
+	if (!rows.length) return null;
+
+	const cart_id = rows[0].id;
+
+	if (type === 'increase') {
+		const { rows: updatedRows } = await pool.query(
+			`
+			UPDATE cart_items
+			SET quantity=quantity+1
+			WHERE cart_id=$1 AND product_id=$2 AND color IS NOT DISTINCT FROM $3
+			RETURNING *
+			`,
+			[cart_id, productId, color]
+		);
+
+		if (!updatedRows.length) return null;
+		return updatedRows[0];
+	} else if (type === 'decrease') {
+		const { rows: updatedRows } = await pool.query(
+			`
+			UPDATE cart_items
+			SET quantity=quantity-1
+			WHERE cart_id=$1 AND product_id=$2 AND color IS NOT DISTINCT FROM $3
+			RETURNING *
+			`,
+			[cart_id, productId, color]
+		);
+		if (!updatedRows.length) return null;
+		return updatedRows[0];
+	}
+};
+
+export const deleteCartModel = async ({ userId, productId, color }) => {
+	const { rows } = await pool.query(`SELECT id FROM carts WHERE user_id=$1`, [
+		userId,
+	]);
+
+	if (!rows.length) return null;
+
+	const cart_id = rows[0].id;
+
+	const result = await pool.query(
+		`
+		DELETE FROM cart_items
+		WHERE cart_id=$1 AND product_id=$2 AND color IS NOT DISTINCT FROM $3
+		RETURNING *
+		`,
+		[cart_id, productId, color]
+	);
+
+	if (!result.rows.length) return null;
+
+	return result.rows[0];
+};
