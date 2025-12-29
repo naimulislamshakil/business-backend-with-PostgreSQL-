@@ -36,6 +36,7 @@ export const getAllCartModel = async (userId) => {
     ci.color,
     ci.quantity,
     ci.price,
+	ci.product_id,
     p.name,
     p.images[1] AS image
     FROM cart_items ci

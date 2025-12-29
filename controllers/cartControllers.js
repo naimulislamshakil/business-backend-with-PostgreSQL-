@@ -66,7 +66,10 @@ export const decreaseCart = catchAsyncError(async (req, res, next) => {
 		type: 'decrease',
 	});
 
+	console.log(updatedItem);
+
 	if (updatedItem.quantity <= 0) {
+		console.log('object');
 		const deleteItem = await deleteCartModel({
 			userId: user_id,
 			productId: product_id,
