@@ -38,3 +38,36 @@ export const addAddressModel = async (
 
 	return result.rows[0];
 };
+
+export const getAllAddressModel = async (userId) => {
+	const result = await pool.query(
+		`
+        SELECT * FROM shipping_addresses WHERE user_id=$1 ORDER BY is_active DESC
+        `,
+		[userId]
+	);
+
+	return result.rows;
+};
+
+export const changeIsActiveModel = async (userId, id) => {
+	const update = await pool.query(
+		`
+        UPDATE shipping_addresses
+        SET is_active=false
+        WHERE user_id=$1 AND is_active=true
+        `,
+		[userId]
+	);
+
+	const result = await pool.query(
+		`
+		UPDATE shipping_addresses
+		SET is_active= true
+		WHERE id=$1 AND user_id=$2
+		RETURNING *
+		`,
+		[id, userId]
+	);
+	return result.rows[0];
+};
