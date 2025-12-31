@@ -71,3 +71,57 @@ export const changeIsActiveModel = async (userId, id) => {
 	);
 	return result.rows[0];
 };
+
+export const deleteAddressModel = async (id, userId) => {
+	const result = await pool.query(
+		`
+		DELETE FROM shipping_addresses WHERE id=$1 AND user_id=$2 RETURNING *
+		`,
+		[id, userId]
+	);
+
+	return result.rows[0];
+};
+
+export const getSingleAddressModel = async (id, userId) => {
+	const result = await pool.query(
+		`
+		SELECT * FROM shipping_addresses WHERE id=$1 AND user_id=$2 
+		`,
+		[id, userId]
+	);
+
+	return result.rows[0];
+};
+
+export const updateAddressModel = async (
+	id,
+	userId,
+	title,
+	firstName,
+	lastName,
+	address,
+	city,
+	postalCode,
+	country
+) => {
+	const result = await pool.query(
+		`
+		UPDATE shipping_addresses
+		SET
+		title = $1,
+    	first_name = $2,
+    	last_name = $3,
+    	address = $4,
+    	city = $5,
+    	postal_code = $6,
+    	country = $7
+		WHERE
+		id = $8 AND user_id = $9
+		RETURNING *
+		`,
+		[title, firstName, lastName, address, city, postalCode, country, id, userId]
+	);
+
+	return result.rows[0];
+};
