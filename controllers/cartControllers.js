@@ -66,8 +66,6 @@ export const decreaseCart = catchAsyncError(async (req, res, next) => {
 		type: 'decrease',
 	});
 
-	console.log(updatedItem);
-
 	if (updatedItem.quantity <= 0) {
 		console.log('object');
 		const deleteItem = await deleteCartModel({
@@ -110,3 +108,5 @@ export const deleteCart = catchAsyncError(async (req, res, next) => {
 		return next(new ErrorHandler('Product not found in cart', 404));
 	}
 });
+
+

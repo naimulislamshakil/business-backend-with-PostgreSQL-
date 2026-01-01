@@ -5,6 +5,11 @@ import { authorizeRoles } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
-router.post('/makeorder', isAuthenticated, authorizeRoles('admin'), makeOrder);
+router.post(
+	'/create_order',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	makeOrder
+);
 
 export default router;

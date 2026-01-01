@@ -8,7 +8,8 @@ export const addAddressModel = async (
 	address,
 	city,
 	postalCode,
-	country
+	country,
+	phone
 ) => {
 	const update = await pool.query(
 		`
@@ -21,7 +22,7 @@ export const addAddressModel = async (
 
 	const result = await pool.query(
 		`INSERT INTO shipping_addresses(
-    user_id, title, first_name, last_name, address, city, postal_code, country, is_active) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)
+    user_id, title, first_name, last_name, address, city, postal_code, country, is_active,phone) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
     RETURNING *`,
 		[
 			user_id,
@@ -33,6 +34,7 @@ export const addAddressModel = async (
 			postalCode,
 			country,
 			true,
+			phone,
 		]
 	);
 
@@ -103,7 +105,8 @@ export const updateAddressModel = async (
 	address,
 	city,
 	postalCode,
-	country
+	country,
+	phone
 ) => {
 	const result = await pool.query(
 		`
@@ -116,11 +119,23 @@ export const updateAddressModel = async (
     	city = $5,
     	postal_code = $6,
     	country = $7
+		phone = $10
 		WHERE
 		id = $8 AND user_id = $9
 		RETURNING *
 		`,
-		[title, firstName, lastName, address, city, postalCode, country, id, userId]
+		[
+			title,
+			firstName,
+			lastName,
+			address,
+			city,
+			postalCode,
+			country,
+			id,
+			userId,
+			phone,
+		]
 	);
 
 	return result.rows[0];

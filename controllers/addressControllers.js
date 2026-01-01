@@ -11,8 +11,16 @@ import {
 
 export const addAddress = catchAsyncError(async (req, res, next) => {
 	const { user_id } = req.user;
-	const { title, firstName, lastName, address, city, postalCode, country } =
-		req.body;
+	const {
+		title,
+		firstName,
+		lastName,
+		address,
+		city,
+		postalCode,
+		country,
+		phone,
+	} = req.body;
 
 	const addAddress = await addAddressModel(
 		user_id,
@@ -22,7 +30,8 @@ export const addAddress = catchAsyncError(async (req, res, next) => {
 		address,
 		city,
 		postalCode,
-		country
+		country,
+		phone
 	);
 
 	if (addAddress) {
@@ -76,8 +85,16 @@ export const getSingleAddress = catchAsyncError(async (req, res, next) => {
 export const updateAddress = catchAsyncError(async (req, res, next) => {
 	const { user_id } = req.user;
 	const { id } = req.params;
-	const { title, firstName, lastName, address, city, postalCode, country } =
-		req.body;
+	const {
+		title,
+		firstName,
+		lastName,
+		address,
+		city,
+		postalCode,
+		country,
+		phone,
+	} = req.body;
 
 	const result = await updateAddressModel(
 		id,
@@ -88,7 +105,8 @@ export const updateAddress = catchAsyncError(async (req, res, next) => {
 		address,
 		city,
 		postalCode,
-		country
+		country,
+		phone
 	);
 	if (result) {
 		handelResponse(res, 200, true, 'Update sccessfully');

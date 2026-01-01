@@ -22,7 +22,7 @@ export const addCartItemModel = async ({
     VALUES ($1, $2, $3, $4, (SELECT price FROM products WHERE product_id = $2))
     ON CONFLICT (cart_id, product_id, color)
     DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity
-    RETURNING *;
+    RETURNING *
     `,
 		[cart_id, product_id, color, quantity]
 	);
