@@ -3,12 +3,17 @@ import { catchAsyncError } from '../middlewares/catchAsyncError.js';
 import ErrorHandler from '../middlewares/errorHandler.js';
 import { handelResponse } from '../middlewares/handelResponse.js';
 import { getSingleAddressModel } from '../models/addressModel.js';
-import { getAllCartModel } from '../models/cartModel.js';
+import { clearCartByUserId, getAllCartModel } from '../models/cartModel.js';
 import {
 	addProductIntoOrderItems,
 	createOrderModel,
+	getOrderByTransactionId,
+	getOrderItemsByOrderId,
 	getSingleOrderModel,
+	updateOrderPaymentStatus,
+	updateOrderTransactionId,
 } from '../models/orderModel.js';
+import { decreaseProductStock } from '../models/productsModel.js';
 
 export const makeOrder = catchAsyncError(async (req, res, next) => {
 	const { user_id } = req.user;
@@ -86,6 +91,8 @@ export const createPayment = catchAsyncError(async (req, res, next) => {
 		.substr(2, 6)
 		.toUpperCase()}`;
 
+	await updateOrderTransactionId(order_id, tran_id);
+
 	const store_id = process.env.SSLCOMMERZ_STORE_ID;
 	const store_passwd = process.env.SSLCOMMERZ_STORE_PASS;
 	const is_live = false;
@@ -94,7 +101,7 @@ export const createPayment = catchAsyncError(async (req, res, next) => {
 		total_amount: Number(order.total_amount),
 		currency: 'BDT',
 		tran_id: tran_id,
-		success_url: 'http://localhost:5000/payment-success',
+		success_url: 'http://localhost:5000/api/v1/order/payment_success',
 		fail_url: 'http://localhost:5000/payment-fail',
 		cancel_url: 'http://localhost:5000/payment-cancel',
 		cus_name: `${order.shipping_first_name} ${order.shipping_last_name}`,
@@ -121,8 +128,6 @@ export const createPayment = catchAsyncError(async (req, res, next) => {
 
 	const apiResponse = await sslcz.init(data);
 
-	console.log(apiResponse);
-
 	if (!apiResponse?.GatewayPageURL) {
 		return next(new ErrorHandler('Failed to initiate payment', 500));
 	}
@@ -131,4 +136,55 @@ export const createPayment = catchAsyncError(async (req, res, next) => {
 		success: true,
 		payment_url: apiResponse.GatewayPageURL,
 	});
+});
+
+export const paymentSuccess = catchAsyncError(async (req, res, next) => {
+	try {
+		const { tran_id, val_id } = req.body;
+
+		if (!tran_id || !val_id) {
+			return next(new ErrorHandler('Invalid payment data', 400));
+		}
+
+		const store_id = process.env.SSLCOMMERZ_STORE_ID;
+		const store_passwd = process.env.SSLCOMMERZ_STORE_PASS;
+
+		const verifyUrl = `https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php?val_id=${val_id}&store_id=${store_id}&store_passwd=${store_passwd}&format=json`;
+
+		const response = await fetch(verifyUrl);
+		const paymentData = await response.json();
+
+		if (paymentData.status !== 'VALID') {
+			return next(new ErrorHandler('Payment not valid', 400));
+		}
+
+		const order = await getOrderByTransactionId(tran_id);
+
+		if (!order) {
+			return next(new ErrorHandler('Order not found', 404));
+		}
+
+		if (order.status === 'paid') {
+			return handelResponse(res, 200, true, 'Already processed');
+		}
+
+		await updateOrderPaymentStatus({
+			orderId: order.id,
+			payment_status: 'paid',
+			payment_method: paymentData.card_type,
+			bank_tran_id: paymentData.bank_tran_id,
+		});
+
+		const items = await getOrderItemsByOrderId(order.id);
+
+		for (let item of items) {
+			await decreaseProductStock(item.product_id, item.quantity);
+		}
+
+		await clearCartByUserId(order.user_id);
+
+		res.redirect(`${process.env.FRONTEND_URL}/thanks-you/order-id=${order.id}`);
+	} catch (error) {
+		return next(new ErrorHandler(error.message, 400));
+	}
 });

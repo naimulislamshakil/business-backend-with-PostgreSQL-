@@ -100,3 +100,5 @@ export const getSingleProduct = catchAsyncError(async (req, res, next) => {
 		handelResponse(res, 200, true, 'Product get successfully.', result);
 	}
 });
+
+;

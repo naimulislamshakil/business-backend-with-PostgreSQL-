@@ -113,3 +113,22 @@ export const deleteCartModel = async ({ userId, productId, color }) => {
 
 	return result.rows[0];
 };
+
+export const clearCartByUserId = async (userId) => {
+	const { rows } = await pool.query(
+		`
+		SELECT * FROM carts WHERE user_id = $1
+		`,
+		[userId]
+	);
+
+	const cartId = rows[0].id;
+	const result = await pool.query(
+		`
+		DELETE FROM cart_items
+		WHERE cart_id = $1
+		RETURNING *;
+		`,
+		[cartId]
+	);
+};

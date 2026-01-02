@@ -80,3 +80,17 @@ export const getSingleProductModel = async (id) => {
 	);
 	return result.rows[0];
 };
+
+export const decreaseProductStock = async (productId, quantity) => {
+	const result = await pool.query(
+		`
+		UPDATE products
+		SET stock_quantity = stock_quantity - $1,
+		    updated_at = NOW()
+		WHERE product_id = $2
+		AND stock_quantity >= $1
+		RETURNING *;
+		`,
+		[quantity, productId]
+	);
+};

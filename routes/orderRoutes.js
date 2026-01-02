@@ -1,5 +1,9 @@
 import express from 'express';
-import { createPayment, makeOrder } from '../controllers/orderControllers.js';
+import {
+	createPayment,
+	makeOrder,
+	paymentSuccess,
+} from '../controllers/orderControllers.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import { authorizeRoles } from '../middlewares/roleMiddleware.js';
 
@@ -18,5 +22,6 @@ router.post(
 	authorizeRoles('user', 'admin'),
 	createPayment
 );
+router.post('/payment_success', paymentSuccess);
 
 export default router;

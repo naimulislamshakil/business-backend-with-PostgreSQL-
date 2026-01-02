@@ -90,3 +90,59 @@ export const getSingleOrderModel = async (orderId) => {
 
 	return result.rows[0];
 };
+
+export const updateOrderTransactionId = async (orderId, tranId) => {
+	const result = await pool.query(
+		`
+		UPDATE orders
+		SET tran_id = $1
+		WHERE id = $2
+		`,
+		[tranId, orderId]
+	);
+};
+
+export const getOrderByTransactionId = async (tranId) => {
+	const result = await pool.query(
+		`
+		SELECT * FROM orders WHERE tran_id = $1
+		`,
+		[tranId]
+	);
+
+	return result.rows[0];
+};
+
+export const updateOrderPaymentStatus = async ({
+	orderId,
+	payment_status,
+	payment_method,
+	bank_tran_id,
+}) => {
+	const result = await pool.query(
+		`
+		UPDATE orders
+		SET
+			payment_status = 'paid',
+			payment_method = $1,
+			tran_id = $2,
+			paid_at = NOW(),
+			updated_at = NOW()
+		WHERE id = $3
+		AND payment_status <> 'paid'
+		RETURNING *
+		`,
+		[payment_method, bank_tran_id, orderId]
+	);
+};
+
+export const getOrderItemsByOrderId = async (orderId) => {
+	const result = await pool.query(
+		`
+		SELECT * FROM order_items WHERE order_id = $1
+		`,
+		[orderId]
+	);
+
+	return result.rows;
+};
