@@ -5,6 +5,9 @@ export const addCartItemModel = async ({
 	color = null,
 	quantity = 1,
 	user_id,
+	name,
+	sku,
+	image,
 }) => {
 	await pool.query(
 		'INSERT INTO carts (user_id) VALUES ($1) ON CONFLICT (user_id) DO NOTHING',
@@ -18,13 +21,13 @@ export const addCartItemModel = async ({
 
 	const insertResult = await pool.query(
 		`
-    INSERT INTO cart_items (cart_id, product_id, color, quantity, price)
-    VALUES ($1, $2, $3, $4, (SELECT price FROM products WHERE product_id = $2))
+    INSERT INTO cart_items (cart_id, product_id, color, quantity, price, name, sku, image)
+    VALUES ($1, $2, $3, $4, (SELECT price FROM products WHERE product_id = $2),$5,$6,$7)
     ON CONFLICT (cart_id, product_id, color)
     DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity
     RETURNING *
     `,
-		[cart_id, product_id, color, quantity]
+		[cart_id, product_id, color, quantity, name, sku, image]
 	);
 
 	return insertResult.rows[0];
@@ -38,6 +41,7 @@ export const getAllCartModel = async (userId) => {
     ci.price,
 	ci.product_id,
     p.name,
+	p.sku,
     p.images[1] AS image
     FROM cart_items ci
     JOIN  carts c ON ci.cart_id=c.id

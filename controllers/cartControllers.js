@@ -8,17 +8,23 @@ import {
 	getAllCartModel,
 	updateCartQuantityModel,
 } from '../models/cartModel.js';
+import { getSingleProductModel } from '../models/productsModel.js';
 
 export const addToCart = catchAsyncError(async (req, res, next) => {
 	try {
 		const { user_id } = req.user;
 		const { product_id, color, quantity = 1 } = req.body;
 
+		const product = await getSingleProductModel(product_id);
+
 		const addCartItem = await addCartItemModel({
 			product_id,
 			color,
 			quantity,
 			user_id,
+			name: product.name,
+			sku: product.sku,
+			image:product.images[0]
 		});
 
 		if (addCartItem) {
@@ -108,5 +114,3 @@ export const deleteCart = catchAsyncError(async (req, res, next) => {
 		return next(new ErrorHandler('Product not found in cart', 404));
 	}
 });
-
-

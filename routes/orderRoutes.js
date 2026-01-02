@@ -1,6 +1,8 @@
 import express from 'express';
 import {
 	createPayment,
+	getAllOrderByUser,
+	getAllOrderItem,
 	getOrderById,
 	makeOrder,
 	paymentSuccess,
@@ -28,6 +30,18 @@ router.get(
 	isAuthenticated,
 	authorizeRoles('user', 'admin'),
 	getOrderById
+);
+router.get(
+	'/get_order_by_user',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	getAllOrderByUser
+);
+router.get(
+	'/get_order_item/:order_id',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	getAllOrderItem
 );
 router.post('/payment_success', paymentSuccess);
 

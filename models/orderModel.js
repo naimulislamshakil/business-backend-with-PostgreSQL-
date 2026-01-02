@@ -66,7 +66,10 @@ export const addProductIntoOrderItems = async (
 	product_id,
 	color,
 	quantity,
-	price
+	price,
+	name,
+	sku,
+	image
 ) => {
 	const result = await pool.query(
 		`
@@ -75,11 +78,11 @@ export const addProductIntoOrderItems = async (
 	    product_id,
 	    color,
 	    quantity,
-	    price
+	    price,name,sku,image
         )
-        VALUES($1,$2,$3,$4,$5)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8)
         `,
-		[order_id, product_id, color, quantity, price]
+		[order_id, product_id, color, quantity, price, name, sku, image]
 	);
 };
 
@@ -161,4 +164,26 @@ export const getOrderByIdModel = async (orderId) => {
 	console.log(result);
 
 	return result.rows[0];
+};
+
+export const getAllOrderByUserModel = async (userId) => {
+	const result = await pool.query(
+		`
+		SELECT * FROM orders WHERE user_id = $1
+		`,
+		[userId]
+	);
+
+	return result.rows;
+};
+
+export const getAllOrderItemModel = async (orderId) => {
+	const result = await pool.query(
+		`
+		SELECT * FROM order_items WHERE order_id=$1
+		`,
+		[orderId]
+	);
+
+	return result.rows;
 };

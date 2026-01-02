@@ -7,6 +7,8 @@ import { clearCartByUserId, getAllCartModel } from '../models/cartModel.js';
 import {
 	addProductIntoOrderItems,
 	createOrderModel,
+	getAllOrderByUserModel,
+	getAllOrderItemModel,
 	getOrderByIdModel,
 	getOrderByTransactionId,
 	getOrderItemsByOrderId,
@@ -72,7 +74,10 @@ export const makeOrder = catchAsyncError(async (req, res, next) => {
 			item.product_id,
 			item.color,
 			item.quantity,
-			item.price
+			item.price,
+			item.name,
+			item.sku,
+			item.image
 		);
 	}
 
@@ -193,11 +198,30 @@ export const paymentSuccess = catchAsyncError(async (req, res, next) => {
 
 export const getOrderById = catchAsyncError(async (req, res, next) => {
 	const { order_id } = req.params;
-	console.log(order_id);
 
 	const result = await getOrderByIdModel(order_id);
 
 	if (result) {
 		handelResponse(res, 200, true, 'Get order info', result);
+	}
+});
+
+export const getAllOrderByUser = catchAsyncError(async (req, res, next) => {
+	const { user_id } = req.user;
+
+	const orders = await getAllOrderByUserModel(user_id);
+
+	if (orders) {
+		handelResponse(res, 200, true, 'Get all order.', orders);
+	}
+});
+
+export const getAllOrderItem = catchAsyncError(async (req, res, next) => {
+	const { order_id } = req.params;
+
+	const orderItems = await getAllOrderItemModel(order_id);
+
+	if (orderItems) {
+		handelResponse(res, 200, true, 'Get all order item.', orderItems);
 	}
 });
