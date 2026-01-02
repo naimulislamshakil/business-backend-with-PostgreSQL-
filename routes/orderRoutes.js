@@ -1,5 +1,5 @@
 import express from 'express';
-import { makeOrder } from '../controllers/orderControllers.js';
+import { createPayment, makeOrder } from '../controllers/orderControllers.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import { authorizeRoles } from '../middlewares/roleMiddleware.js';
 
@@ -10,6 +10,13 @@ router.post(
 	isAuthenticated,
 	authorizeRoles('user', 'admin'),
 	makeOrder
+);
+
+router.post(
+	'/create_payment/:order_id',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	createPayment
 );
 
 export default router;

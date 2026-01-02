@@ -79,3 +79,14 @@ export const addProductIntoOrderItems = async (
 		[order_id, product_id, color, quantity, price]
 	);
 };
+
+export const getSingleOrderModel = async (orderId) => {
+	const result = await pool.query(
+		`
+        SELECT * FROM orders WHERE id = $1
+        `,
+		[orderId]
+	);
+
+	return result.rows[0];
+};
