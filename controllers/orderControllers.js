@@ -7,6 +7,7 @@ import { clearCartByUserId, getAllCartModel } from '../models/cartModel.js';
 import {
 	addProductIntoOrderItems,
 	createOrderModel,
+	getOrderByIdModel,
 	getOrderByTransactionId,
 	getOrderItemsByOrderId,
 	getSingleOrderModel,
@@ -56,6 +57,7 @@ export const makeOrder = catchAsyncError(async (req, res, next) => {
 		shipping_first_name: address.first_name,
 		shipping_last_name: address.last_name,
 		shipping_phone: address.phone,
+		shipping_email: address.email,
 		shipping_address: address.address,
 		shipping_city: address.city,
 		shipping_postal_code: address.postal_code,
@@ -105,7 +107,7 @@ export const createPayment = catchAsyncError(async (req, res, next) => {
 		fail_url: 'http://localhost:5000/payment-fail',
 		cancel_url: 'http://localhost:5000/payment-cancel',
 		cus_name: `${order.shipping_first_name} ${order.shipping_last_name}`,
-		cus_email: 'customer@example.com',
+		cus_email: order.shipping_email,
 		cus_add1: order.shipping_address,
 		cus_city: order.shipping_city,
 		cus_postcode: order.shipping_postal_code,
@@ -183,8 +185,19 @@ export const paymentSuccess = catchAsyncError(async (req, res, next) => {
 
 		await clearCartByUserId(order.user_id);
 
-		res.redirect(`${process.env.FRONTEND_URL}/thanks-you/order-id=${order.id}`);
+		res.redirect(`${process.env.FRONTEND_URL}/thanks-you?order_id=${order.id}`);
 	} catch (error) {
 		return next(new ErrorHandler(error.message, 400));
+	}
+});
+
+export const getOrderById = catchAsyncError(async (req, res, next) => {
+	const { order_id } = req.params;
+	console.log(order_id);
+
+	const result = await getOrderByIdModel(order_id);
+
+	if (result) {
+		handelResponse(res, 200, true, 'Get order info', result);
 	}
 });

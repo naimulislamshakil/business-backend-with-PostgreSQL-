@@ -1,6 +1,7 @@
 import express from 'express';
 import {
 	createPayment,
+	getOrderById,
 	makeOrder,
 	paymentSuccess,
 } from '../controllers/orderControllers.js';
@@ -21,6 +22,12 @@ router.post(
 	isAuthenticated,
 	authorizeRoles('user', 'admin'),
 	createPayment
+);
+router.get(
+	'/get_order/:order_id',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	getOrderById
 );
 router.post('/payment_success', paymentSuccess);
 

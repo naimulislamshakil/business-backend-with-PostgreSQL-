@@ -20,6 +20,7 @@ export const addAddress = catchAsyncError(async (req, res, next) => {
 		postalCode,
 		country,
 		phone,
+		email,
 	} = req.body;
 
 	const addAddress = await addAddressModel(
@@ -31,7 +32,8 @@ export const addAddress = catchAsyncError(async (req, res, next) => {
 		city,
 		postalCode,
 		country,
-		phone
+		phone,
+		email
 	);
 
 	if (addAddress) {
@@ -94,6 +96,7 @@ export const updateAddress = catchAsyncError(async (req, res, next) => {
 		postalCode,
 		country,
 		phone,
+		email,
 	} = req.body;
 
 	const result = await updateAddressModel(
@@ -106,7 +109,8 @@ export const updateAddress = catchAsyncError(async (req, res, next) => {
 		city,
 		postalCode,
 		country,
-		phone
+		phone,
+		email
 	);
 	if (result) {
 		handelResponse(res, 200, true, 'Update sccessfully');

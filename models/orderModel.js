@@ -11,6 +11,7 @@ export const createOrderModel = async ({
 	shipping_first_name,
 	shipping_last_name,
 	shipping_phone,
+	shipping_email,
 	shipping_address,
 	shipping_city,
 	shipping_postal_code,
@@ -29,12 +30,13 @@ export const createOrderModel = async ({
             shipping_first_name,
             shipping_last_name,
             shipping_phone,
+            shipping_email,
             shipping_address,
             shipping_city,
             shipping_postal_code,
             shipping_country
         )
-        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)
         RETURNING *
         `,
 		[
@@ -48,6 +50,7 @@ export const createOrderModel = async ({
 			shipping_first_name,
 			shipping_last_name,
 			shipping_phone,
+			shipping_email,
 			shipping_address,
 			shipping_city,
 			shipping_postal_code,
@@ -145,4 +148,17 @@ export const getOrderItemsByOrderId = async (orderId) => {
 	);
 
 	return result.rows;
+};
+
+export const getOrderByIdModel = async (orderId) => {
+	const result = await pool.query(
+		`
+		SELECT * FROM orders WHERE id = $1
+		`,
+		[orderId]
+	);
+
+	console.log(result);
+
+	return result.rows[0];
 };
