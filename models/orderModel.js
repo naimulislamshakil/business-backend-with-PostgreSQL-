@@ -169,7 +169,7 @@ export const getOrderByIdModel = async (orderId) => {
 export const getAllOrderByUserModel = async (userId) => {
 	const result = await pool.query(
 		`
-		SELECT * FROM orders WHERE user_id = $1
+		SELECT * FROM orders WHERE user_id = $1 ORDER BY paid_at DESC
 		`,
 		[userId]
 	);

@@ -13,6 +13,7 @@ import productRoute from './routes/productsRoutes.js';
 import orderRoute from './routes/orderRoutes.js';
 import cartRoute from './routes/cartRoutes.js';
 import addressRoute from './routes/addressRoutes.js';
+import reviewRoute from './routes/reviewRoutes.js';
 
 app.use(
 	cors({
@@ -38,5 +39,6 @@ app.use('/api/v1/product', productRoute);
 app.use('/api/v1/order', orderRoute);
 app.use('/api/v1/cart', cartRoute);
 app.use('/api/v1/address', addressRoute);
+app.use('/api/v1/review', reviewRoute);
 
 app.use(errorMiddleWare);
