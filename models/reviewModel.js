@@ -54,3 +54,33 @@ export const addReviewModel = async (
 
 	return result.rows[0];
 };
+
+export const getAllReviewByUserMOdel = async (limit, offset, userId) => {
+	const result = await pool.query(
+		`
+		SELECT
+		r.*,
+		p.name AS product_name,
+		p.images[1] AS product_image
+		FROM reviews r
+		JOIN products p ON p.product_id = r.product_id
+		WHERE r.user_id = $3 ORDER BY r.created_at DESC
+		LIMIT $1 OFFSET $2
+		`,
+		[limit, offset, userId]
+	);
+
+	return result.rows;
+};
+
+export const getAllReviewCountModel = async (userId) => {
+	const result = await pool.query(
+		`
+		SELECT COUNT(*)
+		FROM reviews
+		WHERE user_id = $1
+		`,
+		[userId]
+	);
+	return Number(result.rows[0].count);
+};

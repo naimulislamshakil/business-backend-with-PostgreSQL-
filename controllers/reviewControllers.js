@@ -4,6 +4,8 @@ import {
 	addReviewModel,
 	editReviewModel,
 	findExzistingReviewModel,
+	getAllReviewByUserMOdel,
+	getAllReviewCountModel,
 } from '../models/reviewModel.js';
 
 export const AddOrEditReview = catchAsyncError(async (req, res, next) => {
@@ -33,5 +35,26 @@ export const AddOrEditReview = catchAsyncError(async (req, res, next) => {
 		if (result) {
 			return handelResponse(res, 200, true, 'Review add successfully');
 		}
+	}
+});
+
+export const getAllReviewsByUser = catchAsyncError(async (req, res, next) => {
+	const { user_id } = req.user;
+	const page = Number(req.query.page) || 1;
+	const limit = 5;
+
+	const offset = (page - 1) * limit;
+
+	const reviews = await getAllReviewByUserMOdel(limit, offset, user_id);
+
+	const reviewCount = await getAllReviewCountModel(user_id);
+	const data = {
+		data: reviews,
+		totoal: reviewCount,
+		totalPage: Math.ceil(reviewCount / limit),
+	};
+
+	if (reviews && reviewCount) {
+		handelResponse(res, 200, true, 'Get all review by user', data);
 	}
 });
