@@ -84,3 +84,15 @@ export const getAllReviewCountModel = async (userId) => {
 	);
 	return Number(result.rows[0].count);
 };
+
+export const deleteReviewModel = async (reviewId, userId) => {
+	const result = await pool.query(
+		`
+		DELETE FROM reviews WHERE id = $1 AND user_id = $2
+		RETURNING *
+		`,
+		[reviewId, userId]
+	);
+
+	return result.rows[0];
+};

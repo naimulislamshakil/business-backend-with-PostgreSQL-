@@ -3,6 +3,7 @@ import { isAuthenticated } from '../middlewares/auth.js';
 import { authorizeRoles } from '../middlewares/roleMiddleware.js';
 import {
 	AddOrEditReview,
+	deleteReview,
 	getAllReviewsByUser,
 } from '../controllers/reviewControllers.js';
 
@@ -15,5 +16,11 @@ router.post(
 	AddOrEditReview
 );
 router.get('/', isAuthenticated, authorizeRoles('user'), getAllReviewsByUser);
+router.delete(
+	'/:reviewId',
+	isAuthenticated,
+	authorizeRoles('user'),
+	deleteReview
+);
 
 export default router;

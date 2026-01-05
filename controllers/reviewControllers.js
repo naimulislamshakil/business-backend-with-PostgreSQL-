@@ -2,6 +2,7 @@ import { catchAsyncError } from '../middlewares/catchAsyncError.js';
 import { handelResponse } from '../middlewares/handelResponse.js';
 import {
 	addReviewModel,
+	deleteReviewModel,
 	editReviewModel,
 	findExzistingReviewModel,
 	getAllReviewByUserMOdel,
@@ -56,5 +57,16 @@ export const getAllReviewsByUser = catchAsyncError(async (req, res, next) => {
 
 	if (reviews && reviewCount) {
 		handelResponse(res, 200, true, 'Get all review by user', data);
+	}
+});
+
+export const deleteReview = catchAsyncError(async (req, res, next) => {
+	const { user_id } = req.user;
+	const { reviewId } = req.params;
+
+	const result = await deleteReviewModel(reviewId, user_id);
+
+	if (result) {
+		handelResponse(res, 200, true, 'Review delete successfully.');
 	}
 });
