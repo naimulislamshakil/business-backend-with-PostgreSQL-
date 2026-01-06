@@ -96,3 +96,26 @@ export const deleteReviewModel = async (reviewId, userId) => {
 
 	return result.rows[0];
 };
+
+export const getReviewByProductIdModel = async (productId) => {
+	const result = await pool.query(
+		`
+		SELECT r.id,
+		r.rating,
+		r.title,
+		r.comment,
+		r.is_approved,
+		r.is_active,
+		r.created_at,
+		r.updated_at,
+		u.name
+		FROM reviews r
+		JOIN users u ON u.user_id = r.user_id
+		WHERE r.product_id = $1
+		ORDER BY r.created_at DESC
+		`,
+		[productId]
+	);
+
+	return result.rows;
+};

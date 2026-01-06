@@ -5,6 +5,7 @@ import {
 	AddOrEditReview,
 	deleteReview,
 	getAllReviewsByUser,
+	getReviewByProductId,
 } from '../controllers/reviewControllers.js';
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.post(
 	AddOrEditReview
 );
 router.get('/', isAuthenticated, authorizeRoles('user'), getAllReviewsByUser);
+router.get('/get_review_by_product_id/:productId', getReviewByProductId);
 router.delete(
 	'/:reviewId',
 	isAuthenticated,

@@ -10,6 +10,7 @@ import {
 	getAllOrderByUserModel,
 	getAllOrderItemModel,
 	getOrderByIdModel,
+	getOrderByOrderNumberModal,
 	getOrderByTransactionId,
 	getOrderItemsByOrderId,
 	getSingleOrderModel,
@@ -223,5 +224,15 @@ export const getAllOrderItem = catchAsyncError(async (req, res, next) => {
 
 	if (orderItems) {
 		handelResponse(res, 200, true, 'Get all order item.', orderItems);
+	}
+});
+
+export const getOrderByOrderNumber = catchAsyncError(async (req, res, next) => {
+	const { orderNumber } = req.params;
+
+	const order = await getOrderByOrderNumberModal(orderNumber);
+
+	if (order) {
+		handelResponse(res, 200, true, 'Get order', order);
 	}
 });

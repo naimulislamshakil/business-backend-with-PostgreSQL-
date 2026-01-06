@@ -7,6 +7,7 @@ import {
 	findExzistingReviewModel,
 	getAllReviewByUserMOdel,
 	getAllReviewCountModel,
+	getReviewByProductIdModel,
 } from '../models/reviewModel.js';
 
 export const AddOrEditReview = catchAsyncError(async (req, res, next) => {
@@ -68,5 +69,15 @@ export const deleteReview = catchAsyncError(async (req, res, next) => {
 
 	if (result) {
 		handelResponse(res, 200, true, 'Review delete successfully.');
+	}
+});
+
+export const getReviewByProductId = catchAsyncError(async (req, res, next) => {
+	const { productId } = req.params;
+
+	const result = await getReviewByProductIdModel(productId);
+
+	if (result) {
+		handelResponse(res, 200, true, 'Get all review by product', result);
 	}
 });

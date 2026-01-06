@@ -187,3 +187,14 @@ export const getAllOrderItemModel = async (orderId) => {
 
 	return result.rows;
 };
+
+export const getOrderByOrderNumberModal = async (orderNumber) => {
+	const result = await pool.query(
+		`
+		SELECT * FROM orders WHERE order_number = $1
+		`,
+		[orderNumber]
+	);
+
+	return result.rows[0];
+};

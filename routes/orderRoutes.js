@@ -4,6 +4,7 @@ import {
 	getAllOrderByUser,
 	getAllOrderItem,
 	getOrderById,
+	getOrderByOrderNumber,
 	makeOrder,
 	paymentSuccess,
 } from '../controllers/orderControllers.js';
@@ -42,6 +43,12 @@ router.get(
 	isAuthenticated,
 	authorizeRoles('user', 'admin'),
 	getAllOrderItem
+);
+router.get(
+	'/get_order_by_order_number/:orderNumber',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	getOrderByOrderNumber
 );
 router.post('/payment_success', paymentSuccess);
 
