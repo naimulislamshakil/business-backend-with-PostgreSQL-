@@ -15,6 +15,7 @@ import cartRoute from './routes/cartRoutes.js';
 import addressRoute from './routes/addressRoutes.js';
 import reviewRoute from './routes/reviewRoutes.js';
 import contactRoute from './routes/contactRoutes.js';
+import wishlistRoute from './routes/wishlistRoutes.js';
 
 app.use(
 	cors({
@@ -42,5 +43,6 @@ app.use('/api/v1/cart', cartRoute);
 app.use('/api/v1/address', addressRoute);
 app.use('/api/v1/review', reviewRoute);
 app.use('/api/v1/contact', contactRoute);
+app.use('/api/v1/wishlist', wishlistRoute);
 
 app.use(errorMiddleWare);
