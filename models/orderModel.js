@@ -198,3 +198,18 @@ export const getOrderByOrderNumberModal = async (orderNumber) => {
 
 	return result.rows[0];
 };
+
+// for admin
+export const getAllOrderForAdminModal = async () => {
+	const result = await pool.query(
+		`
+		SELECT o.*,
+		u.name AS user_name,
+		u.email AS user_email
+		FROM orders o
+		JOIN users u ON o.user_id = u.user_id
+		ORDER BY o.paid_at DESC
+		`
+	);
+	return result.rows;
+};

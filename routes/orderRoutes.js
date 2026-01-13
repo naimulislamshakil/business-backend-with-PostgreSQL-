@@ -2,6 +2,7 @@ import express from 'express';
 import {
 	createPayment,
 	getAllOrderByUser,
+	getAllOrderForAdmin,
 	getAllOrderItem,
 	getOrderById,
 	getOrderByOrderNumber,
@@ -51,5 +52,13 @@ router.get(
 	getOrderByOrderNumber
 );
 router.post('/payment_success', paymentSuccess);
+
+// for admin
+router.get(
+	'/get_all_order',
+	isAuthenticated,
+	authorizeRoles('admin'),
+	getAllOrderForAdmin
+);
 
 export default router;

@@ -6,6 +6,7 @@ import {
 	addProductModel,
 	deleteProductModel,
 	getAllProductsModel,
+	getProductByCategoryModel,
 	getSingleProductModel,
 } from '../models/productsModel.js';
 import { generateSKU } from '../utils/generate-sku.js';
@@ -101,4 +102,14 @@ export const getSingleProduct = catchAsyncError(async (req, res, next) => {
 	}
 });
 
-;
+export const getProductByCategory = catchAsyncError(async (req, res, next) => {
+	const { categoryId } = req.params;
+
+	console.log(categoryId);
+
+	const result = await getProductByCategoryModel(categoryId);
+
+	if (result) {
+		handelResponse(res, 200, true, 'Get all product by category', result);
+	}
+});

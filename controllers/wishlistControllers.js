@@ -2,6 +2,7 @@ import { catchAsyncError } from '../middlewares/catchAsyncError.js';
 import { handelResponse } from '../middlewares/handelResponse.js';
 import {
 	addWishlistModel,
+	getAllWishlistByUserModel,
 	isProductAddedInWishlist,
 } from '../models/wishlistModel.js';
 
@@ -22,4 +23,12 @@ export const addWishlist = catchAsyncError(async (req, res, next) => {
 	}
 });
 
+export const getAllWishlistByUser = catchAsyncError(async (req, res, next) => {
+	const { user_id } = req.user;
 
+	const result = await getAllWishlistByUserModel(user_id);
+
+	if (result) {
+		handelResponse(res, 200, true, 'Get all wishlist.', result);
+	}
+});

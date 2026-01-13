@@ -3,6 +3,7 @@ import {
 	addProduct,
 	deleteProduct,
 	getAllProducts,
+	getProductByCategory,
 	getSingleProduct,
 } from '../controllers/productsControllers.js';
 import { isAuthenticated } from '../middlewares/auth.js';
@@ -30,6 +31,7 @@ route.get(
 	authorizeRoles('admin'),
 	getSingleProduct
 );
+route.get('/product_for_frontend/:categoryId', getProductByCategory);
 route.get('/product-for-frontend/:id', getSingleProduct);
 
 export default route;

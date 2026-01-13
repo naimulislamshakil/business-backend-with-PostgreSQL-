@@ -8,6 +8,7 @@ import {
 	addProductIntoOrderItems,
 	createOrderModel,
 	getAllOrderByUserModel,
+	getAllOrderForAdminModal,
 	getAllOrderItemModel,
 	getOrderByIdModel,
 	getOrderByOrderNumberModal,
@@ -234,5 +235,15 @@ export const getOrderByOrderNumber = catchAsyncError(async (req, res, next) => {
 
 	if (order) {
 		handelResponse(res, 200, true, 'Get order', order);
+	}
+});
+
+// for admin
+
+export const getAllOrderForAdmin = catchAsyncError(async (req, res, next) => {
+	const result = await getAllOrderForAdminModal();
+
+	if (result) {
+		handelResponse(res, 200, true, 'Get all Order', result);
 	}
 });

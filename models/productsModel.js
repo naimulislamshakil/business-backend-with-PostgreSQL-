@@ -94,3 +94,34 @@ export const decreaseProductStock = async (productId, quantity) => {
 		[quantity, productId]
 	);
 };
+
+export const getProductByCategoryModel = async (categoryId) => {
+	const result = await pool.query(
+		`
+		 SELECT 
+      p.product_id,
+      p.name,
+      p.slug,
+      p.description,
+      p.category_id,
+      c.name AS category_name,
+      p.brand,
+      p.sku,
+      p.price,
+      p.stock_quantity,
+      p.weight,
+      p.dimensions,
+      p.images,
+      p.is_active,
+      p.colors,
+      p.created_at,
+      p.updated_at
+    FROM products p
+    JOIN categories c ON p.category_id = c.category_id
+	WHERE p.category_id = $1
+    ORDER BY p.product_id DESC
+		`,
+		[categoryId]
+	);
+	return result.rows;
+};
