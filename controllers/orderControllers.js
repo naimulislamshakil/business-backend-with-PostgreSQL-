@@ -16,6 +16,7 @@ import {
 	getOrderItemsByOrderId,
 	getSingleOrderModel,
 	updateOrderPaymentStatus,
+	updateOrderStatusModal,
 	updateOrderTransactionId,
 } from '../models/orderModel.js';
 import { decreaseProductStock } from '../models/productsModel.js';
@@ -245,5 +246,22 @@ export const getAllOrderForAdmin = catchAsyncError(async (req, res, next) => {
 
 	if (result) {
 		handelResponse(res, 200, true, 'Get all Order', result);
+	}
+});
+
+export const updateOrderStatus = catchAsyncError(async (req, res, next) => {
+	const { orderId } = req.params;
+	const { status } = req.body;
+
+	console.log(status);
+
+	if (!orderId || !status) {
+		return next(new ErrorHandler('All input needed', 400));
+	}
+
+	const result = await updateOrderStatusModal(orderId, status);
+
+	if (result) {
+		handelResponse(res, 200, true, 'Order status changed.');
 	}
 });

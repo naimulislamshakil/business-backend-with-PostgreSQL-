@@ -19,8 +19,6 @@ router.post(
 );
 router.get(
 	'/category',
-	isAuthenticated,
-	authorizeRoles('admin'),
 	getAllCategories
 );
 router.delete(

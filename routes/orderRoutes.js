@@ -8,6 +8,7 @@ import {
 	getOrderByOrderNumber,
 	makeOrder,
 	paymentSuccess,
+	updateOrderStatus,
 } from '../controllers/orderControllers.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import { authorizeRoles } from '../middlewares/roleMiddleware.js';
@@ -59,6 +60,12 @@ router.get(
 	isAuthenticated,
 	authorizeRoles('admin'),
 	getAllOrderForAdmin
+);
+router.put(
+	'/update_order/:orderId',
+	isAuthenticated,
+	authorizeRoles('admin'),
+	updateOrderStatus
 );
 
 export default router;

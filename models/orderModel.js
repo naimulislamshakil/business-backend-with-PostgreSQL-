@@ -161,8 +161,6 @@ export const getOrderByIdModel = async (orderId) => {
 		[orderId]
 	);
 
-	console.log(result);
-
 	return result.rows[0];
 };
 
@@ -212,4 +210,18 @@ export const getAllOrderForAdminModal = async () => {
 		`
 	);
 	return result.rows;
+};
+
+export const updateOrderStatusModal = async (orderId, status) => {
+	const result = await pool.query(
+		`
+		UPDATE orders
+		SET
+		status = $1
+		WHERE id = $2
+		RETURNING *
+		`,
+		[status, orderId]
+	);
+	return result.rows[0];
 };

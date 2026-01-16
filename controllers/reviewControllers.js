@@ -2,11 +2,13 @@ import { catchAsyncError } from '../middlewares/catchAsyncError.js';
 import { handelResponse } from '../middlewares/handelResponse.js';
 import {
 	addReviewModel,
+	changeReviewApprovedModel,
 	deleteReviewModel,
 	editReviewModel,
 	findExzistingReviewModel,
 	getAllReviewByUserMOdel,
 	getAllReviewCountModel,
+	getAllReviewForAdminModal,
 	getReviewByProductIdModel,
 } from '../models/reviewModel.js';
 
@@ -79,5 +81,24 @@ export const getReviewByProductId = catchAsyncError(async (req, res, next) => {
 
 	if (result) {
 		handelResponse(res, 200, true, 'Get all review by product', result);
+	}
+});
+
+export const getAllReviewForAdmin = catchAsyncError(async (req, res, next) => {
+	const result = await getAllReviewForAdminModal();
+
+	if (result) {
+		handelResponse(res, 200, true, 'Get all review.', result);
+	}
+});
+
+export const changeReviewApproved = catchAsyncError(async (req, res, next) => {
+	const { reviewId } = req.params;
+	const { approved } = req.body;
+
+	const result = await changeReviewApprovedModel(reviewId, approved);
+
+	if (result) {
+		handelResponse(res, 200, true, 'Change approved status.');
 	}
 });

@@ -28,6 +28,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
+
 // CONNECT DATABASE
 app.get('/', async (req, res) => {
 	const result = await pool.query('SELECT current_database()');

@@ -5,6 +5,11 @@ import { addContactMessage } from '../controllers/contactControllers.js';
 
 const router = express.Router();
 
-router.post('/', isAuthenticated, authorizeRoles('user'), addContactMessage);
+router.post(
+	'/',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	addContactMessage
+);
 
 export default router;

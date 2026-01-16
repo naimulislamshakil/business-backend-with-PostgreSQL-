@@ -11,10 +11,35 @@ import { authorizeRoles } from '../middlewares/roleMiddleware.js';
 
 const router = express.Router();
 
-router.post('/add', isAuthenticated, authorizeRoles('user'), addToCart);
-router.get('/', isAuthenticated, authorizeRoles('user'), getAllCartProduct);
-router.put('/increase', isAuthenticated, authorizeRoles('user'), increaseCart);
-router.put('/decrease', isAuthenticated, authorizeRoles('user'), decreaseCart);
-router.delete('/', isAuthenticated, authorizeRoles('user'), deleteCart);
+router.post(
+	'/add',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	addToCart
+);
+router.get(
+	'/',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	getAllCartProduct
+);
+router.put(
+	'/increase',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	increaseCart
+);
+router.put(
+	'/decrease',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	decreaseCart
+);
+router.delete(
+	'/',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	deleteCart
+);
 
 export default router;

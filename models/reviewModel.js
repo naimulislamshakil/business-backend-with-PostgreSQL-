@@ -119,3 +119,29 @@ export const getReviewByProductIdModel = async (productId) => {
 
 	return result.rows;
 };
+
+export const getAllReviewForAdminModal = async () => {
+	const result = await pool.query(
+		`
+		SELECT
+		r.*,
+		u.name AS user_name,
+		u.email AS user_email
+		FROM reviews r
+		JOIN users u ON u.user_id = r.user_id
+		ORDER BY r.created_at DESC
+		`
+	);
+	return result.rows;
+};
+
+export const changeReviewApprovedModel = async (reviewId, approved) => {
+	const result = await pool.query(
+		`
+		UPDATE reviews SET is_approved = $1 WHERE id = $2 RETURNING *;
+		`,
+		[approved, reviewId]
+	);
+
+	return result.rows[0];
+};

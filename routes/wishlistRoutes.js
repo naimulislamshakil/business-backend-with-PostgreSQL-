@@ -11,10 +11,15 @@ const router = express.Router();
 router.post(
 	'/:productId',
 	isAuthenticated,
-	authorizeRoles('user'),
+	authorizeRoles('user', 'admin'),
 	addWishlist
 );
 
-router.get('/', isAuthenticated, authorizeRoles('user'), getAllWishlistByUser);
+router.get(
+	'/',
+	isAuthenticated,
+	authorizeRoles('user', 'admin'),
+	getAllWishlistByUser
+);
 
 export default router;
