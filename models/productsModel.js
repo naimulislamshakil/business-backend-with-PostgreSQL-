@@ -37,7 +37,7 @@ export const addProductModel = async (
 	return result.rows[0];
 };
 
-export const getAllProductsModel = async () => {
+export const getAllProductsModel = async (filters) => {
 	const result = await pool.query(`
     SELECT 
       p.product_id,
