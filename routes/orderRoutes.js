@@ -7,7 +7,7 @@ import {
 	getOrderById,
 	getOrderByOrderNumber,
 	makeOrder,
-	paymentSuccess,
+	// paymentSuccess,
 	updateOrderStatus,
 } from '../controllers/orderControllers.js';
 import { isAuthenticated } from '../middlewares/auth.js';
@@ -52,7 +52,7 @@ router.get(
 	authorizeRoles('user', 'admin'),
 	getOrderByOrderNumber
 );
-router.post('/payment_success', paymentSuccess);
+// router.post('/payment_success', paymentSuccess);
 
 // for admin
 router.get(

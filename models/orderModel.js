@@ -5,7 +5,7 @@ export const createOrderModel = async ({
 	user_id,
 	subtotal,
 	shipping_cost,
-	tax,
+	tax = 0,
 	total_amount,
 	payment_method,
 	shipping_first_name,
@@ -44,7 +44,7 @@ export const createOrderModel = async ({
 			user_id,
 			subtotal,
 			shipping_cost,
-			tax,
+			0,
 			total_amount,
 			payment_method,
 			shipping_first_name,
@@ -121,15 +121,14 @@ export const getOrderByTransactionId = async (tranId) => {
 
 export const updateOrderPaymentStatus = async ({
 	orderId,
-	payment_status,
 	payment_method,
-	bank_tran_id,
+	tran_id,
 }) => {
 	const result = await pool.query(
 		`
 		UPDATE orders
 		SET
-			payment_status = 'paid',
+			payment_status = 'pending',
 			payment_method = $1,
 			tran_id = $2,
 			paid_at = NOW(),
@@ -138,7 +137,7 @@ export const updateOrderPaymentStatus = async ({
 		AND payment_status <> 'paid'
 		RETURNING *
 		`,
-		[payment_method, bank_tran_id, orderId]
+		[payment_method, tran_id, orderId]
 	);
 };
 
@@ -156,7 +155,7 @@ export const getOrderItemsByOrderId = async (orderId) => {
 export const getOrderByIdModel = async (orderId) => {
 	const result = await pool.query(
 		`
-		SELECT * FROM orders WHERE id = $1
+		SELECT * FROM orders WHERE order_number = $1
 		`,
 		[orderId]
 	);
@@ -213,15 +212,30 @@ export const getAllOrderForAdminModal = async () => {
 };
 
 export const updateOrderStatusModal = async (orderId, status) => {
-	const result = await pool.query(
-		`
+	if (status === 'delivered') {
+		const result = await pool.query(
+			`
 		UPDATE orders
 		SET
-		status = $1
+			status = $1,
+			payment_status = 'paid'
 		WHERE id = $2
 		RETURNING *
 		`,
-		[status, orderId]
-	);
-	return result.rows[0];
+			[status, orderId]
+		);
+		return result.rows[0];
+	} else {
+		const result = await pool.query(
+			`
+		UPDATE orders
+		SET
+			status = $1
+		WHERE id = $2
+		RETURNING *
+		`,
+			[status, orderId]
+		);
+		return result.rows[0];
+	}
 };
