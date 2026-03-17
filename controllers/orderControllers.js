@@ -7,6 +7,7 @@ import { clearCartByUserId, getAllCartModel } from '../models/cartModel.js';
 import {
 	addProductIntoOrderItems,
 	createOrderModel,
+	FilterOrdersModel,
 	getAllOrderByUserModel,
 	getAllOrderForAdminModal,
 	getAllOrderItemModel,
@@ -296,8 +297,6 @@ export const updateOrderStatus = catchAsyncError(async (req, res, next) => {
 	const { orderId } = req.params;
 	const { status } = req.body;
 
-	console.log(status);
-
 	if (!orderId || !status) {
 		return next(new ErrorHandler('All input needed', 400));
 	}
@@ -306,5 +305,15 @@ export const updateOrderStatus = catchAsyncError(async (req, res, next) => {
 
 	if (result) {
 		handelResponse(res, 200, true, 'Order status changed.');
+	}
+});
+
+export const filterOrders = catchAsyncError(async (req, res, next) => {
+	const { from, to } = req.query;
+
+	const result = await FilterOrdersModel(from, to);
+
+	if (result) {
+		handelResponse(res, 200, true, 'Get all order', result);
 	}
 });

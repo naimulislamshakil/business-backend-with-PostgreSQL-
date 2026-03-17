@@ -239,3 +239,44 @@ export const updateOrderStatusModal = async (orderId, status) => {
 		return result.rows[0];
 	}
 };
+
+export const FilterOrdersModel = async (from, to) => {
+	const query = `
+    WITH daily_data AS (
+      SELECT 
+        DATE(created_at) as date,
+        COUNT(*) as total_orders,
+        SUM(total_amount) as total_sales
+      FROM orders
+      WHERE created_at >= $1
+      AND created_at < $2::date + INTERVAL '1 day'
+      GROUP BY DATE(created_at)
+    )
+    SELECT 
+      json_agg(daily_data ORDER BY date) as chart,
+      SUM(total_orders) as total_orders,
+      SUM(total_sales) as total_sales,
+      CASE 
+        WHEN SUM(total_orders) > 0 
+        THEN SUM(total_sales) / SUM(total_orders)
+        ELSE 0 
+      END as avg_order_value
+    FROM daily_data;
+  `;
+
+	const result = await pool.query(query, [from, to]);
+	const data = result.rows[0];
+
+	return {
+		chart: (data.chart || []).map((item) => ({
+			date: item.date,
+			total_orders: Number(item.total_orders),
+			total_sales: Number(item.total_sales),
+		})),
+		summary: {
+			totalOrders: Number(data.total_orders || 0),
+			totalSales: Number(data.total_sales || 0),
+			avgOrderValue: Number(data.avg_order_value || 0),
+		},
+	};
+};

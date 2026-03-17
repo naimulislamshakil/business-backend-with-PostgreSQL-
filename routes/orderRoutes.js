@@ -1,6 +1,7 @@
 import express from 'express';
 import {
 	createPayment,
+	filterOrders,
 	getAllOrderByUser,
 	getAllOrderForAdmin,
 	getAllOrderItem,
@@ -66,6 +67,12 @@ router.put(
 	isAuthenticated,
 	authorizeRoles('admin'),
 	updateOrderStatus
+);
+router.get(
+	'/filter-order',
+	isAuthenticated,
+	authorizeRoles('admin'),
+	filterOrders
 );
 
 export default router;
