@@ -8,8 +8,10 @@ import {
 	getOrderById,
 	getOrderByOrderNumber,
 	makeOrder,
+	pieOrders,
 	// paymentSuccess,
 	updateOrderStatus,
+	userCardOrder,
 } from '../controllers/orderControllers.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import { authorizeRoles } from '../middlewares/roleMiddleware.js';
@@ -73,6 +75,13 @@ router.get(
 	isAuthenticated,
 	authorizeRoles('admin'),
 	filterOrders
+);
+router.get('/pie-order', isAuthenticated, authorizeRoles('admin'), pieOrders);
+router.get(
+	'/user-card-order',
+	isAuthenticated,
+	authorizeRoles('user'),
+	userCardOrder
 );
 
 export default router;

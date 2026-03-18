@@ -280,3 +280,37 @@ export const FilterOrdersModel = async (from, to) => {
 		},
 	};
 };
+
+export const pieOrdersModel = async (from, to) => {
+	const result = await pool.query(
+		`SELECT status, COUNT(*) AS total_orders
+   FROM orders
+   WHERE created_at >= $1
+     AND created_at < $2
+   GROUP BY status`,
+		[from, to]
+	);
+
+	const chartData = result.rows.map((item) => ({
+		browser: item.status,
+		visitors: Number(item.total_orders),
+		fill: `var(--color-${item.status})`,
+	}));
+
+	return chartData;
+};
+
+export const userCardOrderModel = async (userId) => {
+	const result = await pool.query(
+		`SELECT
+    COUNT(*) AS lifetime_orders,
+    COALESCE(SUM(total_amount), 0) AS total_spend,
+    COALESCE(AVG(total_amount), 0) AS avg_order_value,
+    MAX(created_at) AS last_order_date
+   FROM orders
+   WHERE user_id = $1`,
+		[userId]
+	);
+
+	return result.rows[0];
+};

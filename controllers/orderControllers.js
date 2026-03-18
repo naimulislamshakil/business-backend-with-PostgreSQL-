@@ -16,9 +16,11 @@ import {
 	getOrderByTransactionId,
 	getOrderItemsByOrderId,
 	getSingleOrderModel,
+	pieOrdersModel,
 	updateOrderPaymentStatus,
 	updateOrderStatusModal,
 	updateOrderTransactionId,
+	userCardOrderModel,
 } from '../models/orderModel.js';
 import { decreaseProductStock } from '../models/productsModel.js';
 
@@ -315,5 +317,25 @@ export const filterOrders = catchAsyncError(async (req, res, next) => {
 
 	if (result) {
 		handelResponse(res, 200, true, 'Get all order', result);
+	}
+});
+
+export const pieOrders = catchAsyncError(async (req, res, next) => {
+	const { from, to } = req.query;
+
+	const result = await pieOrdersModel(from, to);
+
+	if (result) {
+		handelResponse(res, 200, true, 'Get all Order', result);
+	}
+});
+
+export const userCardOrder = catchAsyncError(async (req, res, next) => {
+	const { user_id } = req.user;
+
+	const result = await userCardOrderModel(user_id);
+
+	if (result) {
+		handelResponse(res, 200, true, 'Get all info', result);
 	}
 });
